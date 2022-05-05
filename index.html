@@ -26,16 +26,28 @@
       </div>
 
       <div class="mb-3 row">
-        <label for="destinatario" class="">Destinatario:</label>
+        <label for="destinatario" class="">Destinatario recibe:</label>
         <div class="col-sm-2">
-          <input type="number" class="form-control quote-event" id="destinatario" disabled>
+          <input type="number" class="form-control inverse-quote-event" id="destinatario">
         </div>
         <div class="col-sm-2">
-          <select class="form-select quote-event amount-event" aria-label="Selector de país" id="dest_countries_select">
+          <select class="form-select inverse-quote-event amount-event" aria-label="Selector de país" id="dest_countries_select">
           </select>
         </div>
-        <div class="">
-          <b>Comisiones incluídas en la tasa de cambio</b>
+      </div>
+
+      <div class="mb-3 row">
+        <div class="col-6">
+          <div>
+            Tasa de cambio:
+            <div class="exchange-rate-content" id="exchange_rate"></div>
+          </div>
+        </div>
+        <div class="col-6">
+          <div>
+            Fecha de arribo:
+            <div class="arrival-date-content" id="arrival_date"></div>
+          </div>
         </div>
       </div>
 

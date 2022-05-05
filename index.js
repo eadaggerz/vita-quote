@@ -1,6 +1,7 @@
 let currencies_config;
 let prices_quotes;
 const elements_that_trigger_quote = document.querySelectorAll('.quote-event');
+const elements_that_trigger_inverse_quote = document.querySelectorAll('.inverse-quote-event');
 const elements_that_trigger_minimal_amount = document.querySelectorAll('.amount-event');
 const dest_countries_select = document.getElementById('dest_countries_select');
 const from_currency_select = document.getElementById('amount_selector');
@@ -17,9 +18,17 @@ elements_that_trigger_quote.forEach((item) => {
   });
 });
 
+elements_that_trigger_inverse_quote.forEach((item) => {
+  item.addEventListener('input', (event) => {
+    // todo inverse quote
+  });
+});
+
 elements_that_trigger_minimal_amount.forEach((item) => {
   item.addEventListener('change', (event) => {
     setMinimalAmount();
+    setArrivalDate();
+    setExchangeRate();
   });
 });
 
@@ -41,6 +50,8 @@ function setPricesQuotes() {
     .then(data => {
       prices_quotes = data;
       setMinimalAmount();
+      setArrivalDate();
+      setExchangeRate();
     });
 }
 
@@ -113,8 +124,8 @@ function calculateQuote() {
 
   const send_price = prices_quotes["fiat"][to_currency.toLowerCase()][`${from_currency.toLowerCase()}_sell`];
 
-   quote = send_price * from_currency_value;
-   to_currency_input.value = quote.toFixed(2);
+  quote = send_price * from_currency_value;
+  to_currency_input.value = quote.toFixed(2);
 }
 
 function setMinimalAmount() {
@@ -127,4 +138,31 @@ function setMinimalAmount() {
   const minimal_amount = prices_quotes["fiat"][to_currency.toLowerCase()][`${from_currency.toLowerCase()}_min`];
 
   minimal_amount_element.innerHTML = `${Number(minimal_amount).toFixed(2)} ${from_currency.toUpperCase()}`;
+}
+
+function setArrivalDate() {
+  const to_currency = dest_countries_select.value;
+  const arrival_date_element = document.getElementById('arrival_date');
+
+  if (prices_quotes === undefined) return;
+
+  const days = prices_quotes['days'][to_currency.toLowerCase()];
+
+  let date = new Date();
+
+  date.setDate(date.getDate() + days); // non-intituive method that adds days to current date
+
+  arrival_date_element.innerHTML = `${date.getMonth()} / ${date.getDate()}`;
+}
+
+function setExchangeRate() {
+  const from_currency = from_currency_select.value;
+  const to_currency = dest_countries_select.value;
+  const exachange_rate_element = document.getElementById('exchange_rate');
+
+  if (prices_quotes === undefined) return;
+
+  const send_price = prices_quotes["fiat"][to_currency.toLowerCase()][`${from_currency.toLowerCase()}_sell`];
+
+  exachange_rate_element.innerHTML = send_price.toFixed(2);
 }
