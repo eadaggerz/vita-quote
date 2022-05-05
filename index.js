@@ -20,7 +20,7 @@ elements_that_trigger_quote.forEach((item) => {
 
 elements_that_trigger_inverse_quote.forEach((item) => {
   item.addEventListener('input', (event) => {
-    // todo inverse quote
+    calculateQuote(true);
   });
 });
 
@@ -113,18 +113,32 @@ function searchFlagUrl(currency_iso_code, countries) {
   return flag_url;
 }
 
-function calculateQuote() {
+function calculateQuote(inverse = false) {
   const from_currency = from_currency_select.value
   const to_currency = dest_countries_select.value;
-  const from_currency_value = document.getElementById('amount').value;
+  const from_currency_input = document.getElementById('amount');
+  const from_currency_value = from_currency_input.value;
   const to_currency_input = document.getElementById('destinatario');
+  const to_currency_value = to_currency_input.value;
+  let quote;
 
-  if (from_currency_value === null) return;
+  if (!inverse && from_currency_value === null) return;
+  if (inverse && to_currency_value === null) return;
   if (prices_quotes === undefined) return;
 
   const send_price = prices_quotes["fiat"][to_currency.toLowerCase()][`${from_currency.toLowerCase()}_sell`];
 
+
+  if ( inverse ) {
+    quote = to_currency_value / send_price;
+
+    from_currency_input.value = quote.toFixed(2);
+
+    return;
+  }
+
   quote = send_price * from_currency_value;
+
   to_currency_input.value = quote.toFixed(2);
 }
 
