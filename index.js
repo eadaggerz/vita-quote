@@ -10,6 +10,11 @@ window.addEventListener('load', (event) => {
   setCurrencies();
 
   startPricesQuotesInterval();
+
+  $('.select2').select2({
+    templateResult: addFlag,
+    templateSelection: addFlag
+  });
 });
 
 elements_that_trigger_quote.forEach((item) => {
@@ -113,6 +118,23 @@ function searchFlagUrl(currency_iso_code, countries) {
   return flag_url;
 }
 
+function addFlag(opt) {
+  if(!opt.id) {
+    return opt.text;
+  }
+
+  var opt_image = $(opt.element).data('image');
+
+  if(!opt_image) {
+    return opt.text.toUpperCase();
+  } else {
+    var $opt = $(
+      '<span><img src="' + opt_image + '"width="60px" />' + opt.text.toUpperCase() + '</span>'
+    );
+    return $opt
+  }
+}
+
 function calculateQuote(inverse = false) {
   const from_currency = from_currency_select.value
   const to_currency = dest_countries_select.value;
@@ -166,7 +188,7 @@ function setArrivalDate() {
 
   date.setDate(date.getDate() + days); // non-intituive method that adds days to current date
 
-  arrival_date_element.innerHTML = `${date.getMonth()} / ${date.getDate()}`;
+  arrival_date_element.innerHTML = `${'Fecha de llegada:</br>'+date.getMonth()} / ${date.getDate()}`;
 }
 
 function setExchangeRate() {
@@ -178,5 +200,5 @@ function setExchangeRate() {
 
   const send_price = prices_quotes["fiat"][to_currency.toLowerCase()][`${from_currency.toLowerCase()}_sell`];
 
-  exachange_rate_element.innerHTML = send_price.toFixed(2);
+  exachange_rate_element.innerHTML = `${"Tasa de cambio:</br>"+send_price.toFixed(2)}`;
 }
