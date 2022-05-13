@@ -7,13 +7,27 @@ const dest_countries_select = document.getElementById('dest_countries_select');
 const from_currency_select = document.getElementById('amount_selector');
 
 window.addEventListener('load', (event) => {
+  $('.select2').select2({
+    templateResult: addFlag,
+    templateSelection: addFlag
+  });
+
   setCurrencies();
 
   startPricesQuotesInterval();
 
-  $('.select2').select2({
-    templateResult: addFlag,
-    templateSelection: addFlag
+  $('#amount_selector_select2').on('select2:select', function (e) {
+    calculateQuote();
+    setMinimalAmount();
+    setArrivalDate();
+    setExchangeRate();
+  });
+
+  $('#dest_countries_select2').on('select2:select', function (e) {
+    calculateQuote(true);
+    setMinimalAmount();
+    setArrivalDate();
+    setExchangeRate();
   });
 });
 
@@ -79,15 +93,31 @@ function fillAmountCurrenciesSelect(data = {}) {
   keys.forEach(element => {
     if( element === 'btc') return;
 
-    option_element = document.createElement('option');
-    option_element.value = data.vita_currencies[element].label;
+    currency_name = text = data.vita_currencies[element].currency_name;
+    option_value = data.vita_currencies[element].label;
+    iso_code = findIsoCode(option_value, data.countries);
 
-    text_element = document.createTextNode(data.vita_currencies[element].currency_name);
-
-    option_element.appendChild(text_element);
-
-    amount_currencies_select.appendChild(option_element);
+    $('<option>')
+      .val(option_value)
+      .text(currency_name)
+      .data('image', searchFlagUrl(iso_code, data.countries))
+      .appendTo('#amount_selector_select2');
   });
+}
+
+function findIsoCode(currency_label, countries) {
+  let iso_code;
+  const iso_codes_to_skip = ['EC', 'HT', 'PA', 'PEUSD'];
+
+  const keys = Object.keys(countries);
+
+  keys.some( key => {
+    iso_code = countries[key].iso_code;
+
+    return (countries[key].label === currency_label && !iso_codes_to_skip.includes(iso_code));
+  });
+
+  return iso_code;
 }
 
 function fillDestCurrenciesSelect(data = {}) {
@@ -96,11 +126,15 @@ function fillDestCurrenciesSelect(data = {}) {
   keys.forEach(element => {
     if (data.countries[element].iso_code === 'BTC') return;
 
-    option_element = document.createElement('option');
-    option_element.value = data.countries[element].iso_code;
-    option_element.innerHTML = data.countries[element].currency_name;
+    let iso_code = data.countries[element].iso_code;
+    let currency_name = data.countries[element].currency_name;
 
-    dest_countries_select.appendChild(option_element);
+    $('<option>')
+      .val(iso_code)
+      .text(currency_name)
+      .data('image', searchFlagUrl(iso_code, data.countries))
+      .appendTo('#dest_countries_select2');
+
   });
 }
 
@@ -136,8 +170,8 @@ function addFlag(opt) {
 }
 
 function calculateQuote(inverse = false) {
-  const from_currency = from_currency_select.value
-  const to_currency = dest_countries_select.value;
+  const from_currency = $('#amount_selector_select2').val();
+  const to_currency = $('#dest_countries_select2').val();
   const from_currency_input = document.getElementById('amount');
   const from_currency_value = from_currency_input.value;
   const to_currency_input = document.getElementById('destinatario');
@@ -147,6 +181,7 @@ function calculateQuote(inverse = false) {
   if (!inverse && from_currency_value === null) return;
   if (inverse && to_currency_value === null) return;
   if (prices_quotes === undefined) return;
+  if (prices_quotes['message']) return;
 
   const send_price = prices_quotes["fiat"][to_currency.toLowerCase()][`${from_currency.toLowerCase()}_sell`];
 
@@ -165,11 +200,12 @@ function calculateQuote(inverse = false) {
 }
 
 function setMinimalAmount() {
-  const from_currency = from_currency_select.value
-  const to_currency = dest_countries_select.value;
+  const from_currency = $('#amount_selector_select2').val();
+  const to_currency = $('#dest_countries_select2').val();
   const minimal_amount_element = document.getElementById('minimal_amount');
 
   if (prices_quotes === undefined) return;
+  if (prices_quotes['message']) return;
 
   const minimal_amount = prices_quotes["fiat"][to_currency.toLowerCase()][`${from_currency.toLowerCase()}_min`];
 
@@ -177,10 +213,11 @@ function setMinimalAmount() {
 }
 
 function setArrivalDate() {
-  const to_currency = dest_countries_select.value;
+  const to_currency = $('#dest_countries_select2').val();
   const arrival_date_element = document.getElementById('arrival_date');
 
   if (prices_quotes === undefined) return;
+  if (prices_quotes['message']) return;
 
   const days = prices_quotes['days'][to_currency.toLowerCase()];
 
@@ -192,11 +229,12 @@ function setArrivalDate() {
 }
 
 function setExchangeRate() {
-  const from_currency = from_currency_select.value;
-  const to_currency = dest_countries_select.value;
+  const from_currency = $('#amount_selector_select2').val();
+  const to_currency = $('#dest_countries_select2').val();
   const exachange_rate_element = document.getElementById('exchange_rate');
 
   if (prices_quotes === undefined) return;
+  if (prices_quotes['message']) return;
 
   const send_price = prices_quotes["fiat"][to_currency.toLowerCase()][`${from_currency.toLowerCase()}_sell`];
 

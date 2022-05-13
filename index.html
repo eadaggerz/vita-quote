@@ -166,11 +166,11 @@ border-color: #E3E3E3;
   color: #4F4F4F;
   height: 52px;
   padding-top: 12px;
-  
+
 
 }
 .select2.select2-container .select2-selection img{
-  
+
   width: 24px;
 }
 
@@ -225,7 +225,7 @@ background: #FFFFFF;
 width: 200.17px;
 }
 .select2-container .select2-dropdown .select2-results ul .select2-results__option--highlighted[aria-selected] img {
-  
+
   width: 24px;
 }
 
@@ -239,8 +239,7 @@ width: 200.17px;
 
       <label for="amount" class="block">Monto a enviar:</label>
       <input type="number" class="form-control quote-event" id="amount">
-      <select class="form-select quote-event amount-event" aria-label="Selector de país" id="amount_selector">
-      </select>
+      <select class="form-select select2" id="amount_selector_select2"></select>
 
       <div class="block">
         Monto mínimo: <b id="minimal_amount"></b>
@@ -248,7 +247,7 @@ width: 200.17px;
 
       <label for="destinatario" class="block">Destinatario recibe:</label>
       <input type="number" class="form-control inverse-quote-event" id="destinatario">
-      <select class="form-select inverse-quote-event amount-event" aria-label="Selector de país" id="dest_countries_select">
+      <select class="form-select select2" id="dest_countries_select2">
       </select>
 
       <p class="exchange-rate-content tasaandfechadellegada tasa" id="exchange_rate">Tasa de cambio:</p>
@@ -259,13 +258,6 @@ width: 200.17px;
       </div>
     </form>
   </div>
-
-  <select class="select2">
-    <option value=1 data-image="https://api.vitawallet.io/mailers/flags/AR.png">&nbsp&nbspAsadotina</option>
-    <option value=2 data-image="https://api.vitawallet.io/mailers/flags/VE.png">&nbsp&nbspMemezuela</option>
-    <option value=2 data-image="https://api.vitawallet.io/mailers/flags/VE.png">&nbsp&nbspMemezuela es sabroso</option>
-    <option value=2 data-image="https://api.vitawallet.io/mailers/flags/VE.png">&nbsp&nbspMemezuela</option>
-  </select>
 
   <script src="index.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-ka7Sk0Gln4gmtz2MlQnikT1wXgYsOg+OMhuP+IlRH9sENBO0LRn5q+8nbTov4+1p" crossorigin="anonymous"></script>
