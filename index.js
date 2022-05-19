@@ -21,6 +21,8 @@ window.addEventListener('load', (event) => {
     setMinimalAmount();
     setArrivalDate();
     setExchangeRate();
+    $('#dest_countries_select2').empty().trigger('change');
+    fillDestCurrenciesSelect(currencies_config);
   });
 
   $('#dest_countries_select2').on('select2:select', function (e) {
@@ -86,8 +88,6 @@ async function getData(url = '', data = {}) {
 }
 
 function fillAmountCurrenciesSelect(data = {}) {
-  const amount_currencies_select = document.getElementById('amount_selector');
-
   const keys = Object.keys(data.vita_currencies);
 
   keys.forEach(element => {
@@ -122,9 +122,12 @@ function findIsoCode(currency_label, countries) {
 
 function fillDestCurrenciesSelect(data = {}) {
   const keys = Object.keys(data.countries);
+  const selected_amount_country = $('#amount_selector_select2').val();
 
   keys.forEach(element => {
     if (data.countries[element].iso_code === 'BTC') return;
+
+    if( selected_amount_country === data.countries[element].label) return;
 
     let iso_code = data.countries[element].iso_code;
     let currency_name = data.countries[element].currency_name;
@@ -239,4 +242,8 @@ function setExchangeRate() {
   const send_price = prices_quotes["fiat"][to_currency.toLowerCase()][`${from_currency.toLowerCase()}_sell`];
 
   exachange_rate_element.innerHTML = `${"Tasa de cambio:</br>"+send_price.toFixed(2)}`;
+}
+
+function updateDestCurrencyClasses() {
+
 }
