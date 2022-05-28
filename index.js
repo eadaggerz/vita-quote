@@ -123,11 +123,16 @@ function findIsoCode(currency_label, countries) {
 function fillDestCurrenciesSelect(data = {}) {
   const keys = Object.keys(data.countries);
   const selected_amount_country = $('#amount_selector_select2').val();
+  const iso_code_white_list = ['PEUSD', 'PA', 'HT', 'EC'];
 
   keys.forEach(element => {
     if (data.countries[element].iso_code === 'BTC') return;
 
-    if( selected_amount_country === data.countries[element].label) return;
+    console.log(`Selected amount country: ${selected_amount_country}`);
+    console.log(`Data Country Label: ${data.countries[element].label}`);
+
+    if( !iso_code_white_list.includes(data.countries[element].iso_code) &&
+        selected_amount_country === data.countries[element].label ) return;
 
     let iso_code = data.countries[element].iso_code;
     let currency_name = data.countries[element].currency_name;
