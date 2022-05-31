@@ -6,15 +6,16 @@ const elements_that_trigger_minimal_amount = document.querySelectorAll('.amount-
 const dest_countries_select = document.getElementById('dest_countries_select');
 const from_currency_select = document.getElementById('amount_selector');
 
+
 window.addEventListener('load', (event) => {
+  setCurrencies();
+
+  startPricesQuotesInterval();
+
   $('.select2').select2({
     templateResult: addFlag,
     templateSelection: addFlag
   });
-
-  setCurrencies();
-
-  startPricesQuotesInterval();
 
   $('#amount_selector_select2').on('select2:select', function (e) {
     calculateQuote();
@@ -69,11 +70,15 @@ function setPricesQuotes() {
 
   getData(prices_quote_url)
     .then(data => {
-      prices_quotes = data;
-      setMinimalAmount();
-      setArrivalDate();
-      setExchangeRate();
-    });
+      if (data.message) {
+        setTimeout(setPricesQuotes, 550);
+      } else {
+        prices_quotes = data;
+        setMinimalAmount();
+        setArrivalDate();
+        setExchangeRate();
+      }
+    })
 }
 
 function startPricesQuotesInterval() {
@@ -127,9 +132,6 @@ function fillDestCurrenciesSelect(data = {}) {
 
   keys.forEach(element => {
     if (data.countries[element].iso_code === 'BTC') return;
-
-    console.log(`Selected amount country: ${selected_amount_country}`);
-    console.log(`Data Country Label: ${data.countries[element].label}`);
 
     if( !iso_code_white_list.includes(data.countries[element].iso_code) &&
         selected_amount_country === data.countries[element].label ) return;
