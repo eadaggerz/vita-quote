@@ -1,5 +1,8 @@
 let currencies_config;
 let prices_quotes;
+const monthNames = [
+  "Enero", "Febrero", "Marzo", "Abril", "Mayo", "Junio", "Julio", "Agosto", "Septiembre", "Octubre", "Noviembre", "Diciembre"
+];
 const elements_that_trigger_quote = document.querySelectorAll('.quote-event');
 const elements_that_trigger_inverse_quote = document.querySelectorAll('.inverse-quote-event');
 const elements_that_trigger_minimal_amount = document.querySelectorAll('.amount-event');
@@ -235,7 +238,11 @@ function setArrivalDate() {
 
   date.setDate(date.getDate() + days); // non-intituive method that adds days to current date
 
-  arrival_date_element.innerHTML = `${'Fecha de llegada:</br>'+date.getMonth()} / ${date.getDate()}`;
+  arrival_date_element.innerHTML = `${
+    '<img src="http://co.vitawallet.io/wp-content/uploads/2022/05/Iconsdateico.png">'+
+    'Fecha de llegada:</br>'+
+    date.getDate()} de ${monthNames[date.getMonth()]
+  }`;
 }
 
 function setExchangeRate() {
@@ -248,9 +255,9 @@ function setExchangeRate() {
 
   const send_price = prices_quotes["fiat"][to_currency.toLowerCase()][`${from_currency.toLowerCase()}_sell`];
 
-  exachange_rate_element.innerHTML = `${"Tasa de cambio:</br>"+send_price.toFixed(2)}`;
-}
-
-function updateDestCurrencyClasses() {
-
+  exachange_rate_element.innerHTML = `${
+    '<img src="http://co.vitawallet.io/wp-content/uploads/2022/05/moneymoneyico.png">'+
+    "Tasa de cambio:</br>"+
+    send_price.toFixed(2)
+  }`;
 }
